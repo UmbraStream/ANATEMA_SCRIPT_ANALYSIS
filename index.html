@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ANATEMA — Screenplay Analysis</title>
+<style>
+  /* =========================================================
+     COLOR PALETTE — merged from the two provided palettes
+     Palette 1 (Fab Mood, ocean waves): deep teals to pale sky
+     Palette 2 (Akula Kreative, sea from space): gold, teal, navy
+     ========================================================= */
+  :root {
+    --ink:            #0B1D2E;   /* deepest navy (space) */
+    --deep:           #13324F;   /* deep ocean */
+    --mid:            #255E79;   /* mid ocean teal */
+    --steel:          #4B8396;   /* steel sea */
+    --pale:           #8FB8C4;   /* pale spray */
+    --mist:           #C9DEE3;   /* sea mist */
+    --teal-bright:    #2FA08F;   /* space-sea teal */
+    --gold:           #D9A021;   /* coastline gold */
+    --gold-soft:      #E8BD56;   /* soft gold */
+    --paper:          #FDFBF4;   /* warm paper */
+    --paper-cool:     #F3F6F7;   /* cool paper */
+    --rule:           rgba(19, 50, 79, 0.15);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+    font-size: 11pt;
+    line-height: 1.55;
+  }
+
+  .page {
+    max-width: 8.0in;
+    margin: 0 auto;
+    padding: 0.55in 0.65in;
+  }
+
+  /* =========================================================
+     COVER
+     ========================================================= */
+  .cover {
+    background: linear-gradient(180deg, var(--ink) 0%, var(--deep) 45%, var(--mid) 100%);
+    color: var(--paper);
+    padding: 1.1in 0.75in 0.9in 0.75in;
+    page-break-after: always;
+    position: relative;
+    min-height: 9.8in;
+  }
+
+  .cover::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 0.28in;
+    background: linear-gradient(90deg,
+      var(--gold) 0%,
+      var(--gold-soft) 25%,
+      var(--teal-bright) 50%,
+      var(--mid) 75%,
+      var(--ink) 100%);
+  }
+
+  .cover .eyebrow {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 9.5pt;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold-soft);
+    margin-bottom: 0.35in;
+  }
+
+  .cover h1 {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-weight: 300;
+    font-size: 56pt;
+    letter-spacing: 0.18em;
+    margin: 0 0 0.05in 0;
+    line-height: 1;
+    color: var(--paper);
+  }
+
+  .cover .subtitle {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-weight: 300;
+    font-size: 14pt;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--pale);
+    margin-bottom: 0.55in;
+  }
+
+  .cover .trilogy {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 9pt;
+    letter-spacing: 0.4em;
+    color: var(--gold);
+    margin-bottom: 0.8in;
+  }
+
+  .cover .pull {
+    border-left: 3px solid var(--gold);
+    padding: 0.15in 0 0.15in 0.25in;
+    margin: 0.35in 0 0.5in 0;
+    font-style: italic;
+    font-size: 13pt;
+    color: var(--mist);
+    max-width: 5.2in;
+  }
+
+  .cover .pull cite {
+    display: block;
+    margin-top: 0.15in;
+    font-style: normal;
+    font-size: 9pt;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--steel);
+  }
+
+  .cover .meta {
+    position: absolute;
+    left: 0.75in;
+    bottom: 0.8in;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 8.5pt;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--pale);
+    line-height: 1.9;
+  }
+
+  .cover .meta span {
+    color: var(--gold-soft);
+  }
+
+  /* =========================================================
+     SECTION HEADERS
+     ========================================================= */
+  h2.act {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-weight: 300;
+    font-size: 28pt;
+    letter-spacing: 0.12em;
+    color: var(--deep);
+    margin: 0.2in 0 0.05in 0;
+    line-height: 1.05;
+  }
+
+  h2.act .num {
+    color: var(--gold);
+    font-weight: 500;
+    margin-right: 0.15in;
+  }
+
+  .act-sub {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 9.5pt;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--steel);
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 0.12in;
+    margin-bottom: 0.28in;
+  }
+
+  h3 {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-weight: 500;
+    font-size: 13pt;
+    color: var(--deep);
+    margin: 0.28in 0 0.08in 0;
+    letter-spacing: 0.01em;
+  }
+
+  h3 .tag {
+    display: inline-block;
+    font-size: 7.5pt;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--paper);
+    background: var(--teal-bright);
+    padding: 2px 8px;
+    border-radius: 2px;
+    vertical-align: middle;
+    margin-right: 0.1in;
+    font-weight: 600;
+  }
+
+  h3 .tag.weak {
+    background: var(--gold);
+    color: var(--ink);
+  }
+
+  h3 .tag.fix {
+    background: var(--mid);
+    color: var(--paper);
+  }
+
+  /* =========================================================
+     BODY CONTENT
+     ========================================================= */
+  p {
+    margin: 0 0 0.12in 0;
+    text-align: justify;
+    hyphens: auto;
+  }
+
+  p.lead {
+    font-size: 11.5pt;
+    color: var(--deep);
+    margin-bottom: 0.22in;
+  }
+
+  strong { color: var(--deep); }
+  em { color: var(--mid); }
+
+  blockquote {
+    margin: 0.15in 0;
+    padding: 0.12in 0.22in;
+    border-left: 3px solid var(--teal-bright);
+    background: var(--paper-cool);
+    font-style: italic;
+    color: var(--deep);
+    font-size: 10.5pt;
+  }
+
+  /* =========================================================
+     CALLOUT CARDS
+     ========================================================= */
+  .card {
+    margin: 0.2in 0;
+    padding: 0.2in 0.22in;
+    border-radius: 3px;
+    page-break-inside: avoid;
+  }
+
+  .card.strength {
+    background: linear-gradient(180deg, var(--paper-cool) 0%, #E8F1F3 100%);
+    border-left: 4px solid var(--teal-bright);
+  }
+
+  .card.weakness {
+    background: #FBF5E6;
+    border-left: 4px solid var(--gold);
+  }
+
+  .card.suggestion {
+    background: #EAF0F4;
+    border-left: 4px solid var(--mid);
+  }
+
+  .card .label {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 8pt;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 0.08in;
+  }
+
+  .card.strength .label   { color: var(--teal-bright); }
+  .card.weakness .label   { color: var(--gold); }
+  .card.suggestion .label { color: var(--mid); }
+
+  .card .title {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-weight: 600;
+    font-size: 11pt;
+    color: var(--deep);
+    margin-bottom: 0.08in;
+  }
+
+  /* =========================================================
+     ACT BANNER — wave strip under each act title
+     ========================================================= */
+  .wave-strip {
+    height: 0.18in;
+    margin: 0.08in 0 0.3in 0;
+    background: linear-gradient(90deg,
+      var(--ink) 0%,
+      var(--deep) 20%,
+      var(--mid) 40%,
+      var(--steel) 60%,
+      var(--teal-bright) 80%,
+      var(--gold) 100%);
+    border-radius: 1px;
+  }
+
+  /* =========================================================
+     TWO-COLUMN GRID for verdicts
+     ========================================================= */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.2in;
+    margin: 0.2in 0;
+  }
+
+  .grid-2 .card { margin: 0; }
+
+  /* =========================================================
+     VERDICT PANEL
+     ========================================================= */
+  .verdict {
+    margin: 0.35in 0 0.2in 0;
+    padding: 0.3in;
+    background: linear-gradient(135deg, var(--deep) 0%, var(--ink) 100%);
+    color: var(--mist);
+    border-radius: 4px;
+    page-break-inside: avoid;
+  }
+
+  .verdict .label {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 8pt;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.1in;
+  }
+
+  .verdict h4 {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-weight: 300;
+    font-size: 16pt;
+    color: var(--paper);
+    margin: 0 0 0.12in 0;
+    letter-spacing: 0.02em;
+  }
+
+  .verdict p {
+    color: var(--mist);
+    margin-bottom: 0.1in;
+  }
+
+  /* =========================================================
+     PAGE BREAKS
+     ========================================================= */
+  .break { page-break-before: always; }
+
+  /* =========================================================
+     FOOTER / COLOR STRIP
+     ========================================================= */
+  .palette-strip {
+    display: flex;
+    height: 0.35in;
+    margin-top: 0.3in;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .palette-strip > div { flex: 1; }
+
+  .footnote {
+    margin-top: 0.15in;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 7.5pt;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--steel);
+    text-align: center;
+  }
+
+  /* =========================================================
+     KEY QUOTE — used for script excerpts
+     ========================================================= */
+  .excerpt {
+    margin: 0.15in 0.2in;
+    padding: 0.1in 0.18in;
+    border-left: 2px solid var(--pale);
+    color: var(--mid);
+    font-family: "Courier New", monospace;
+    font-size: 9.5pt;
+    line-height: 1.45;
+  }
+</style>
+</head>
+<body>
+
+<!-- ========================================================
+     COVER
+     ======================================================== -->
+<div class="cover">
+  <div class="eyebrow">Screenplay Analysis · Final Draft</div>
+  <h1>ANATEMA</h1>
+  <div class="subtitle">A Structural &amp; Dramatic Reading</div>
+  <div class="trilogy">MENIS &nbsp;·&nbsp; ANATEMA &nbsp;·&nbsp; ANABASIS</div>
+
+  <div class="pull">
+    &ldquo;The sea does not take. It keeps.&rdquo;
+    <cite>— Old Dalmatian saying</cite>
+  </div>
+
+  <div class="pull">
+    &ldquo;Sing, O goddess, the anger of Achilles — and all the countless sorrows it brought upon the Greeks.&rdquo;
+    <cite>— Homer, The Iliad, Book I</cite>
+  </div>
+
+  <div class="meta">
+    Document &nbsp;<span>·</span>&nbsp; Analytical Reading<br>
+    Scope &nbsp;<span>·</span>&nbsp; Act I · Act II · Act III<br>
+    Focus &nbsp;<span>·</span>&nbsp; Strengths · Weak Points · Revisions
+  </div>
+</div>
+
+<!-- ========================================================
+     OVERVIEW
+     ======================================================== -->
+<div class="page">
+  <h2 class="act"><span class="num">00</span>Overview</h2>
+  <div class="act-sub">The Script At A Glance</div>
+  <div class="wave-strip"></div>
+
+  <p class="lead">
+    <em>ANATEMA</em> is the middle panel of a mythic triptych, and it reads like one — a descent narrative
+    structured around a mother who has been diving toward a lost daughter for eight years, a cosmology in
+    which the Greek experiment of civilization is ending, and a sea that does not take but keeps.
+    The screenplay is ambitious in scope, restrained in execution, and unusually honest about grief.
+    It works more often than it doesn&rsquo;t, and where it works it works powerfully.
+  </p>
+
+  <p>
+    This document is organized by act. Within each act, strengths are catalogued first — because there
+    are many, and because the screenplay&rsquo;s strengths are distinctive enough to warrant specific attention —
+    followed by weak points and concrete suggestions for revision. A final verdict summarizes the
+    piece&rsquo;s standing as both a standalone film and as the middle movement of <em>THE GREEK COLLISION.</em>
+  </p>
+
+  <blockquote>
+    The reason this screenplay works, when it works, is that it has understood something most screenplays
+    about grief do not: the sea does not give things back, and that has to be okay, and the way it
+    becomes okay is not through closure but through continuation.
+  </blockquote>
+
+  <h3>Central Thesis of the Script</h3>
+  <p>
+    Loss is not resolved — it is inherited. Luna&rsquo;s signal runs in the water forever. Mara&rsquo;s
+    signal joins it. The frequency is permanent. The sea keeps what it keeps, and that keeping is not
+    consolation but cosmology. This is a thesis most screenplays about grief cannot reach; this one does.
+  </p>
+
+  <h3>Principal Dramatic Assets</h3>
+  <p>
+    A protagonist whose want and need are identical (to reach her daughter / to accept that her daughter
+    is not returnable); an antagonist whose evil is bureaucratic rather than malicious; a supporting
+    cast structured around a descent-ladder of human limits; and a final image that refuses reunion and
+    earns its refusal.
+  </p>
+</div>
+
+<!-- ========================================================
+     ACT ONE
+     ======================================================== -->
+<div class="page break">
+  <h2 class="act"><span class="num">01</span>The Zone Opens</h2>
+  <div class="act-sub">Act One &nbsp;·&nbsp; Pages 1 – 33 &nbsp;·&nbsp; Setup, Inciting Incident, Commitment</div>
+  <div class="wave-strip"></div>
+
+  <p class="lead">
+    Act One is the screenplay&rsquo;s most economical work. In roughly thirty-three pages it establishes a
+    protagonist, a wound, a world, a cosmology, an antagonist, a ticking clock, and a team — without
+    any of these feeling pre-fabricated. The opening sequence in particular is doing work most
+    screenplays attempt and fail.
+  </p>
+
+  <h3><span class="tag">STRENGTH</span>The Opening Sequence Is Load-Bearing And Earns Everything</h3>
+  <p>
+    Mara and six-year-old Luna on the dawn water, the daughter&rsquo;s quiet <em>&ldquo;Me too,&rdquo;</em>
+    the forty-seconds-too-late rescue dive, and the cut to eight years later — these four pages earn
+    the entire emotional stakes of the film. The specific image of Luna not falling but
+    <em>descending, the way Mara descends, with direction</em>, transforms a drowning into an inheritance.
+    This is the single most important craft decision in the screenplay: the loss is not a random tragedy
+    but a hereditary call, which makes everything that follows organic.
+  </p>
+
+  <div class="card strength">
+    <div class="label">What It Buys You</div>
+    <div class="title">Permanent emotional purchase on Mara</div>
+    <p style="margin:0;">
+      By the end of page 6, the audience is aligned with Mara in the way that usually takes a full first act
+      to achieve. The script has bought itself the right to be quiet, slow, and strange in later passages
+      because the engine is already running.
+    </p>
+  </div>
+
+  <h3><span class="tag">STRENGTH</span>Apollo As Diagnostic Antagonist</h3>
+  <p>
+    Apollo&rsquo;s entrance on the south shore rocks is one of the strongest scenes in the screenplay.
+    The choice to make him <em>beautiful and wrong in the way of something that has been perfect so long
+    it forgot what imperfection was for</em> is genuinely original. He is not menacing; he is diagnostic.
+    His sensor array reads heart rate and cortisol. His voice arrives before his mouth moves. His answer
+    to why he let Luna drown — <em>&ldquo;The data was necessary&rdquo;</em> — is more chilling than any
+    villain monologue could be. This is evil rendered as bureaucracy, which is harder to write and more
+    honest than evil rendered as cruelty.
+  </p>
+
+  <h3><span class="tag">STRENGTH</span>The Meteorite / Zone Inciting Incident</h3>
+  <p>
+    The landing — <em>&ldquo;Not explosion. Reception. The water opening, taking it, closing.&rdquo;</em> — is
+    three lines of description that tell the audience the entire genre in six words. The subsequent
+    collapse of every human-made frequency in a forty-kilometer radius converts a science-fiction premise
+    into a mythic one: civilization goes briefly dark, and under that darkness the older signal becomes
+    audible. The Fisherman sitting down because he <em>knows something has come home</em> is a perfect
+    gestural beat.
+  </p>
+
+  <h3><span class="tag">STRENGTH</span>Vesna, Introduced Without Fanfare</h3>
+  <p>
+    <em>&ldquo;I&rsquo;m not diving. I&rsquo;m holding the boats. Someone has to stay on the surface and
+    watch.&rdquo;</em> This is a character stating her structural function in the story without the
+    screenplay telegraphing it. Vesna is the moral spine of <em>ANATEMA</em> — the one who stays on the
+    surface while the protagonist goes through — and Act One introduces her with exactly the economy the
+    part requires.
+  </p>
+
+  <h3><span class="tag">STRENGTH</span>The Seven Sails, The Ancient Technology</h3>
+  <p>
+    The image of seven wind-powered catamarans assembling at dawn because <em>anything with a motor</em>
+    fails inside the zone is doing quiet thematic work: the film&rsquo;s solution to a post-human crisis
+    is pre-industrial. The world is saved by rope, sail, and breath. This is a choice, not a coincidence,
+    and it pays off formally in the final image of Vesna rowing back.
+  </p>
+
+  <h3><span class="tag weak">WEAK POINT</span>The Countdown Does Not Yet Compete With The Dive</h3>
+  <p>
+    The fourteen-hour / eleven-hour / nine-hour zone-expansion clock is technically functional but
+    dramatically diffuse. The script&rsquo;s real clock is oxygen in Mara&rsquo;s lungs, and the external
+    countdown competes with the internal one rather than amplifying it. A 40-km zone reaching the coast
+    is abstract; a woman at 290m with five seconds of breath is not.
+  </p>
+
+  <div class="card suggestion">
+    <div class="label">Suggested Revision</div>
+    <div class="title">Let the external clock recede once the dive begins</div>
+    <p style="margin:0;">
+      Establish the zone&rsquo;s expansion firmly in Act One — it is doing useful work there, giving
+      Romel&rsquo;s NATO presence a reason to assemble the sailboats — then deliberately lower its
+      volume once the divers cross the perimeter. The film&rsquo;s second-act tension is not
+      <em>will they beat the zone</em> but <em>will Mara reach the mirror</em>. Cutting back to Romel
+      checking his watch in Act Two dilutes rather than intensifies. Consider cutting Romel&rsquo;s
+      mid-act interludes entirely and returning to him only at the zone&rsquo;s collapse.
+    </p>
+  </div>
+
+  <h3><span class="tag weak">WEAK POINT</span>Romel Is Still A Type, Not A Person</h3>
+  <p>
+    &ldquo;Get me every free diver in NATO&rsquo;s personnel registry. And get me sailboats.&rdquo; is an
+    excellent line, but Romel himself is The Competent Commander with no interior specificity.
+    The script earns him time because the countdown is real; he does not yet use that time.
+  </p>
+
+  <div class="card suggestion">
+    <div class="label">Suggested Revision</div>
+    <div class="title">Give Romel one specific, human weight</div>
+    <p style="margin:0;">
+      One line of private history — a previous operation on this coast, a son, a fear of deep water —
+      is all that is needed. Not backstory; a single anchor. The screenplay trusts its actors elsewhere;
+      it can trust them here too.
+    </p>
+  </div>
+
+  <h3><span class="tag weak">WEAK POINT</span>The Mythology Arrives Asserted Rather Than Earned</h3>
+  <p>
+    <em>&ldquo;Before Zeus. Before the blueprint.&rdquo;</em> — <em>&ldquo;Three thousand years of the
+    blueprint — undone.&rdquo;</em> A reader encountering <em>ANATEMA</em> without <em>MENIS</em> will do
+    significant inferential work to assemble the cosmology. What is the experiment? What is Apollo
+    maintaining? Why was Poseidon exiled? The words are evocative; the referents are underspecified.
+  </p>
+
+  <div class="card suggestion">
+    <div class="label">Suggested Revision</div>
+    <div class="title">One concrete image of the blueprint</div>
+    <p style="margin:0;">
+      Apollo does not need to explain — that would ruin him — but a single visual beat could anchor the
+      cosmology. Consider: during the south-shore confrontation, Apollo&rsquo;s sensor array briefly
+      projects (visibly, onto the rock, onto the water, into Mara&rsquo;s line of sight) the lattice he
+      maintains. One image. No dialogue. The audience now has a referent for &ldquo;the blueprint&rdquo;
+      for the rest of the film.
+    </p>
+  </div>
+</div>
+
+<!-- ========================================================
+     ACT TWO
+     ======================================================== -->
+<div class="page break">
+  <h2 class="act"><span class="num">02</span>The Descent</h2>
+  <div class="act-sub">Act Two &nbsp;·&nbsp; Pages 34 – 56 &nbsp;·&nbsp; Crossing, First Contact, The Mirror</div>
+  <div class="wave-strip"></div>
+
+  <p class="lead">
+    Act Two is where <em>ANATEMA</em> stops being ambitious and becomes achieved. The descent sequence
+    — each diver stopping at a different depth, for a different reason, and each stop externalizing
+    a different human relationship to limit — is the finest writing in the screenplay and the most
+    original structural choice. If the film has a signature, it is here.
+  </p>
+
+  <h3><span class="tag">STRENGTH</span>The Ladder Of Depths</h3>
+  <p>
+    Cole at 120 meters (honest, no protocol, ascends without shame). Petra at 150 meters
+    (feels <em>present</em> for the first time in twelve competitive years, cries on a breath she
+    cannot waste). Ana at 200 meters (came for transcendence, finds only truth, which is larger).
+    Sonja at 240 meters (sets down thirty years of grief in the right place). Lena at 270 meters
+    (releases her final breath-hold reserve as a gift, collapsing three frequencies into one).
+    This is the screenplay teaching itself. Each diver is a different answer to the same question
+    — <em>how far are you willing to go, and why</em> — and each stop is dramatically distinct.
+  </p>
+
+  <div class="card strength">
+    <div class="label">Why It Works</div>
+    <div class="title">The descent doubles as characterization</div>
+    <p style="margin:0;">
+      Four supporting characters introduced briefly in Act One each receive their most revealing moment
+      in the silence of a single underwater beat. No dialogue is required. The screenplay has earned
+      the right to wordless characterization because Act One laid the groundwork so efficiently.
+    </p>
+  </div>
+
+  <h3><span class="tag">STRENGTH</span>Vesna Holds The Rope</h3>
+  <p>
+    The surface sequence — Apollo&rsquo;s creatures approaching the boats, the nearest one opening
+    its mouth and playing <em>Luna&rsquo;s exact voice at age two, the word she invented</em> — is a
+    hair-raising scene, and Vesna&rsquo;s response in old Čakavian, <em>&ldquo;You are not her&rdquo;</em>,
+    is one of the great lines of the screenplay. Her refusal is the ethical mirror of Mara&rsquo;s
+    descent: Mara reaches the real signal, Vesna refuses the false one. This structural parallel is
+    earned and devastating.
+  </p>
+
+  <h3><span class="tag">STRENGTH</span>Lena&rsquo;s Exhale At 270 Meters</h3>
+  <p>
+    The choice to have Lena release the last of her breath-hold reserve as a deliberate gift —
+    <em>Not accident — choice</em> — and to have that frequency join Mara&rsquo;s descent path is the
+    screenplay&rsquo;s most elegant use of its own premise. The pull is a bloodline. Bloodlines can
+    be given. This beat could not exist in a lesser version of this script.
+  </p>
+
+  <h3><span class="tag">STRENGTH</span>The Mirror</h3>
+  <p>
+    Three hundred and thirty-three meters. The membrane. Two worlds visible simultaneously.
+    Poseidon&rsquo;s hand around Mara&rsquo;s. Five seconds of oxygen. The image is mythic, but the
+    execution is physical — a hand, a breath, a threshold. This is the moment the screenplay has been
+    building toward since page one, and it does not flinch.
+  </p>
+
+  <h3><span class="tag weak">WEAK POINT</span>&ldquo;Luna Was Never There&rdquo; Is Told, Not Dramatized</h3>
+  <p>
+    At 290 meters, with five seconds of oxygen, Apollo transmits directly into Mara&rsquo;s nervous
+    system: the signal she has followed for eight years is grief shaping passage frequency, not her
+    daughter. Mara reasons her way through it — <em>the pull is real, it was real before Luna, real
+    after, hers, not designed</em> — and pushes through. Philosophically correct. Thematically
+    essential. Dramatically, however, it is a paragraph of interior monologue at the climactic beat,
+    which is the one place the screenplay cannot afford interior monologue.
+  </p>
+
+  <div class="card suggestion">
+    <div class="label">Suggested Revision</div>
+    <div class="title">Externalize the decision into a single physical action</div>
+    <p style="margin:0;">
+      Consider: Mara reaches into her pocket for the photograph of Luna she has carried the entire film.
+      She looks at it underwater. She lets it go — not as dismissal, as release. The photograph drifts
+      down ahead of her through the mirror. She follows it. The decision is now an action, not a
+      thought. The audience sees her choose the reality of the signal over the image of her daughter,
+      and the photograph becomes the first thing to pass through the membrane. No monologue required.
+    </p>
+  </div>
+
+  <h3><span class="tag weak">WEAK POINT</span>Apollo&rsquo;s Transmission Risks Ambiguity</h3>
+  <p>
+    When Apollo sends the &ldquo;Luna was never there&rdquo; transmission, is he lying, telling the
+    truth, or telling a truth weaponized for effect? The script leaves this productively ambiguous —
+    Mara concludes it does not matter — but the ambiguity creates a secondary problem: it lowers
+    Apollo&rsquo;s stakes. If he might be lying, he is less terrifying. If he is telling the truth,
+    the dive has been a grief-projection for eight years. Neither reading is cleanly load-bearing.
+  </p>
+
+  <div class="card suggestion">
+    <div class="label">Suggested Revision</div>
+    <div class="title">Commit to one reading and let the other reverberate</div>
+    <p style="margin:0;">
+      The stronger choice is almost certainly: Apollo is telling a partial truth as a weapon. Luna&rsquo;s
+      signal <em>did</em> dissolve into the passage frequency — that is what Mara finds on the other
+      side. But Apollo&rsquo;s framing (&ldquo;she was never there&rdquo;) is a cruelty, not a fact.
+      This can be clarified with a single line later — Poseidon on the other shore:
+      <em>&ldquo;What she carried is here. He knew this. He showed you the fact as an absence.&rdquo;</em>
+    </p>
+  </div>
+
+  <h3><span class="tag weak">WEAK POINT</span>Cole&rsquo;s Ascent Is Slightly Too Clean</h3>
+  <p>
+    Cole turning back at 120 meters because he has <em>always had a protocol and here there is no
+    protocol</em> is a beautiful beat, but the screenplay gives him the narrator&rsquo;s verdict on
+    his own choice: <em>He does not feel bad about this. He feels honest.</em> This is the script
+    telling the audience how to read him. He is interesting enough that he does not need the
+    endorsement.
+  </p>
+
+  <div class="card suggestion">
+    <div class="label">Suggested Revision</div>
+    <div class="title">Trust the image; cut the verdict</div>
+    <p style="margin:0;">
+      Let him ascend. Let the next shot be him on the catamaran, quiet, watching the water. The
+      audience will read &ldquo;honest&rdquo; without being told. The same note applies to several of
+      the other descent-stops, though less urgently.
+    </p>
+  </div>
+</div>
+
+<!-- ========================================================
+     ACT THREE
+     ======================================================== -->
+<div class="page break">
+  <h2 class="act"><span class="num">03</span>What Is Kept</h2>
+  <div class="act-sub">Act Three &nbsp;·&nbsp; Pages 57 – 82 &nbsp;·&nbsp; The Other Side, The Seven Nodes, The Rowing Back</div>
+  <div class="wave-strip"></div>
+
+  <p class="lead">
+    Act Three has two climaxes — the plot climax (Apollo&rsquo;s last move, the seventh node, the
+    passage fully opening) and the emotional climax (the six catamarans rowing back, one fewer than
+    went out). The screenplay is right to make the second one the true ending. Vesna is where the
+    film&rsquo;s heart is, and the final image of her feet in the water, watching the patterns,
+    saying <em>&ldquo;I know&rdquo;</em>, is exactly the ending the screenplay has been building
+    toward. The concern is that the plot climax currently risks feeling like an obligation to resolve.
+  </p>
+
+  <h3><span class="tag">STRENGTH</span>The Refusal To Resurrect Luna</h3>
+  <p>
+    This is the single most important decision in the entire screenplay and it is correct. Mara does
+    not find her daughter. She finds <em>what her daughter carried</em> — the signal, running in the
+    water of Poseidon&rsquo;s ocean, permanent because water is permanent. <em>&ldquo;She is not okay
+    in the way of someone returned to before loss. That is not what the sea keeps. She is okay in
+    the way of someone who found what they were looking for and it was not what they expected and it
+    is real and it will have to be enough. Which it is.&rdquo;</em> That passage is the entire thesis
+    of the film, it is earned, and a lesser version of this screenplay would have reunited them.
+  </p>
+
+  <div class="card strength">
+    <div class="label">Why It Matters</div>
+    <div class="title">The film&rsquo;s cosmology becomes coherent here</div>
+    <p style="margin:0;">
+      The sea keeps, it does not give back. The signal is inherited, not recovered. Luna is not a ghost
+      and not a destination; she is a frequency in the medium that connects all seas. This is the
+      cosmology the script has been working toward since page one, and it lands.
+    </p>
+  </div>
+
+  <h3><span class="tag">STRENGTH</span>Apollo&rsquo;s Admission</h3>
+  <p>
+    <em>&ldquo;I knew what she was from the moment she went in. The signal was perfect. Complete.
+    The cleanest reading in thirty years of watching your bloodline. I should have let her surface.&rdquo;</em>
+    Whether this is genuine registration or another calculated transmission (see Act Two notes), the
+    line itself is strong. It is the first time Apollo has spoken in anything other than measurement,
+    and it costs him structurally — his broadcast collapses moments later.
+  </p>
+
+  <h3><span class="tag">STRENGTH</span>The Six Catamarans Rowing North</h3>
+  <p>
+    <em>Six catamarans rowing north. Not seven. The absence present the way a frequency is present
+    after the source stops.</em> This is the best single line in Act Three. The screenplay does not
+    mourn Mara — it makes her absence a presence, which is the same operation the screenplay has
+    performed on Luna for the entire film. Structurally elegant.
+  </p>
+
+  <h3><span class="tag">STRENGTH</span>Vesna&rsquo;s Final &ldquo;I Know&rdquo;</h3>
+  <p>
+    The final scene — Vesna on the dock the next dawn, feet in the water, watching the patterns,
+    smiling, saying <em>&ldquo;I know&rdquo;</em> to the water — is a perfect closing image. She is
+    the film&rsquo;s witness. She held the surface. She earned this. The screenplay ends on her and
+    is correct to end on her.
+  </p>
+
+  <h3><span class="tag weak">WEAK POINT</span>The Seven Nodes Sequence Is Structurally Compressed</h3>
+  <p>
+    Mara touches six of the seven nodes between Scene One and Scene Two of Act Three, essentially
+    offscreen. Then the seventh is the confrontation. This is the screenplay skipping the work: it
+    tells us she did the difficult thing, and then dramatizes the difficult thing that mattered.
+    Either the first six deserve dramatization — even briefly, the way the descent dramatizes each
+    depth — or the architecture should be simplified so that the seventh-node confrontation
+    <em>is</em> the whole task.
+  </p>
+
+  <div class="card suggestion">
+    <div class="label">Suggested Revision — Option A</div>
+    <div class="title">Collapse the seven into one</div>
+    <p style="margin:0;">
+      Simplify the architecture. The broadcast has a single structural seal, not seven distributed
+      ones. Mara reaches it, touches it, and Apollo&rsquo;s transmission arrives at that single moment.
+      The dramatic weight concentrates. The seven is biblical in flavor but unnecessary; one node is
+      cinematic.
+    </p>
+  </div>
+
+  <div class="card suggestion">
+    <div class="label">Suggested Revision — Option B</div>
+    <div class="title">Dramatize six of seven as a descent-ladder echo</div>
+    <p style="margin:0;">
+      If the seven is structurally required (perhaps for <em>ANABASIS</em>), treat the six as a brief
+      sequence — each node a different texture, the way each depth-stop in Act Two was a different
+      texture. A half-page of dramatized nodes would make the seventh&rsquo;s reinforcement feel like
+      an escalation rather than an asserted obstacle.
+    </p>
+  </div>
+
+  <h3><span class="tag weak">WEAK POINT</span>Three Closing Epigraphs Is One Too Many (Or Two)</h3>
+  <p>
+    <em>&ldquo;What we do in life echoes in eternity&rdquo;</em> (Maximus, <em>Gladiator</em>) —
+    <em>&ldquo;What the sea keeps echoes longer&rdquo;</em> (the film&rsquo;s own thesis) —
+    <em>&ldquo;Only reality is holy, my friend&rdquo;</em> (Ginsberg / returning epigraph). Each of
+    these is good on its own. In sequence they diminish each other. The middle epigraph is the one
+    the film has earned; the other two are unearned borrowing of pre-existing gravity.
+  </p>
+
+  <div class="card suggestion">
+    <div class="label">Suggested Revision</div>
+    <div class="title">Close on the film&rsquo;s own sentence</div>
+    <p style="margin:0;">
+      Keep <em>&ldquo;What the sea keeps echoes longer.&rdquo;</em> Cut the other two. The screenplay
+      has written its own epitaph — it does not need to quote Ridley Scott or Allen Ginsberg to end.
+    </p>
+  </div>
+
+  <h3><span class="tag weak">WEAK POINT</span>Juda Is Under-Integrated Across The Whole Script</h3>
+  <p>
+    Juda is doing important work — he is the film&rsquo;s Cassandra, the witness-on-land who measures
+    what nobody else can measure and who writes the post-experimental language in the final image.
+    Across three acts, however, he does mathematics at a telescope, makes one radio call to Romel, and
+    falls asleep at his desk. As symbol he is effective. As character he is thin.
+  </p>
+
+  <div class="card suggestion">
+    <div class="label">Suggested Revision</div>
+    <div class="title">Give Juda one plot-critical moment in Act Two</div>
+    <p style="margin:0;">
+      His measurements should matter to someone&rsquo;s decision. Consider: at the Act Two midpoint,
+      his radio call to Babić (not Romel) changes the mission — the divers learn something from his
+      mathematics that they could not have known from underwater. Perhaps his math reveals that the
+      passage will close permanently if Mara does not reach the mirror within a specific window,
+      collapsing the external countdown into the internal one and <em>solving</em> the first weak
+      point noted in Act One. Juda becomes the bridge between the surface and the depth — which is
+      thematically his role anyway.
+    </p>
+  </div>
+
+  <h3><span class="tag weak">WEAK POINT</span>The Morgan / Babić Phone Call Spells The Theme</h3>
+  <p>
+    <em>&ldquo;Tell him it was never a threat. It was a door. Someone on this island was born to open
+    it.&rdquo;</em> This is a beautiful line and a theme-in-dialogue. The audience has just watched
+    this. The screenplay is telling them what they have seen.
+  </p>
+
+  <div class="card suggestion">
+    <div class="label">Suggested Revision</div>
+    <div class="title">Trust the image; shorten the line</div>
+    <p style="margin:0;">
+      Keep <em>&ldquo;It was a door.&rdquo;</em> Cut the two sentences around it. The three words are
+      enough. The scene is stronger for the silence.
+    </p>
+  </div>
+</div>
+
+<!-- ========================================================
+     CROSS-CUTTING
+     ======================================================== -->
+<div class="page break">
+  <h2 class="act"><span class="num">04</span>Cross-Cutting Observations</h2>
+  <div class="act-sub">Patterns That Span All Three Acts</div>
+  <div class="wave-strip"></div>
+
+  <div class="grid-2">
+    <div class="card strength">
+      <div class="label">Voice</div>
+      <div class="title">The prose of the scene description is distinctive</div>
+      <p style="margin:0;">
+        Fragmented, declarative, often single lines that function as prose poetry.
+        <em>&ldquo;The sea before the tourists wake.&rdquo;</em> &nbsp;—&nbsp;
+        <em>&ldquo;Not explosion. Reception.&rdquo;</em> &nbsp;—&nbsp;
+        <em>&ldquo;Dark. Cold. Crushing. Completely ordinary. Completely changed.&rdquo;</em>
+        Writing that trusts the reader and trusts the image.
+      </p>
+    </div>
+
+    <div class="card strength">
+      <div class="label">Ethics</div>
+      <div class="title">Grief is treated with unusual seriousness</div>
+      <p style="margin:0;">
+        The screenplay does not pathologize Mara&rsquo;s eight-year dive, and it does not romanticize it
+        either. It treats her grief as a cosmological fact, not a problem to solve. This is the ethical
+        posture of the film and it is correct.
+      </p>
+    </div>
+
+    <div class="card weakness">
+      <div class="label">Pattern</div>
+      <div class="title">Thematic statements occasionally close scenes the image has already closed</div>
+      <p style="margin:0;">
+        Cole&rsquo;s honesty, Vesna&rsquo;s closing phone line, the three epigraphs, several descent-stop
+        verdicts. The script&rsquo;s best instinct is image; its recurring weakness is trusting the
+        image slightly less than it should.
+      </p>
+    </div>
+
+    <div class="card weakness">
+      <div class="label">Pattern</div>
+      <div class="title">Supporting characters are thin outside their descent beats</div>
+      <p style="margin:0;">
+        Petra, Ana, Cole, Sonja are archetypes (Champion, Mystic, Soldier, Archaeologist) rendered
+        beautifully in their single depth-stop moment but almost invisible otherwise. One additional
+        line of specificity each, placed in Act One, would compound across the descent.
+      </p>
+    </div>
+  </div>
+
+  <h3>A Note On The Trilogy Frame</h3>
+  <p>
+    Several of this document&rsquo;s weak-point notes — the under-specified cosmology, Juda&rsquo;s
+    thin integration, the seven-node architecture — are almost certainly load-bearing in
+    <em>MENIS</em> or <em>ANABASIS</em>. The analysis above treats <em>ANATEMA</em> as a
+    standalone film because that is the discipline a middle panel must survive: if it only works
+    as part of the triptych, it does not work as itself. The strengths catalogued here, by contrast,
+    are entirely the screenplay&rsquo;s own.
+  </p>
+
+  <h3>A Note On Dialogue</h3>
+  <p>
+    The dialogue is, on the whole, excellent. The best lines are restrained to the point of austerity:
+    <em>&ldquo;I know.&rdquo;</em> &nbsp;—&nbsp; <em>&ldquo;Go.&rdquo;</em> &nbsp;—&nbsp;
+    <em>&ldquo;Sails up.&rdquo;</em> &nbsp;—&nbsp; <em>&ldquo;You are not her.&rdquo;</em> The
+    screenplay achieves its most powerful effects with two to three words. When it slips, it slips
+    because it has allowed itself more.
+  </p>
+</div>
+
+<!-- ========================================================
+     VERDICT
+     ======================================================== -->
+<div class="page">
+  <div class="verdict">
+    <div class="label">Final Verdict</div>
+    <h4>A mythic screenplay that earns its cosmology.</h4>
+    <p>
+      <em>ANATEMA</em> is an unusual piece of work: a grief film disguised as a science-fiction film,
+      or a science-fiction film disguised as a mythology, or — more accurately than either — a
+      screenplay that refuses the distinction. It has an uncommonly strong protagonist, an original
+      antagonist, a supporting ensemble used with real structural intelligence, and an ending that
+      refuses the cheap resolution and earns the harder one.
+    </p>
+    <p>
+      Its weaknesses are real and addressable. The mythology needs one more concrete anchor. The
+      seven-node architecture needs either dramatization or simplification. Juda needs a plot-critical
+      beat. The closing epigraphs need pruning. Several dialogue passages need to trust their images
+      more. None of these are structural defects. All of them are the kind of weakness that is fixed
+      in a revision rather than a rewrite.
+    </p>
+    <p>
+      The script is good. In its descent sequence and its final image it is better than good.
+      With the revisions suggested here, it would be the strongest middle panel a triptych could ask for.
+    </p>
+  </div>
+
+  <div class="palette-strip">
+    <div style="background: var(--gold);"></div>
+    <div style="background: var(--gold-soft);"></div>
+    <div style="background: var(--teal-bright);"></div>
+    <div style="background: var(--steel);"></div>
+    <div style="background: var(--mid);"></div>
+    <div style="background: var(--deep);"></div>
+    <div style="background: var(--ink);"></div>
+  </div>
+  <div class="footnote">ANATEMA &nbsp;·&nbsp; Screenplay Analysis &nbsp;·&nbsp; The Greek Collision</div>
+</div>
+
+</body>
+</html>
